@@ -27,6 +27,8 @@ class ActivityLogger
 
     protected LogBatch $batch;
 
+    protected ?string $logConnection = null;
+
     public function __construct(Repository $config, ActivityLogStatus $logStatus, LogBatch $batch, CauserResolver $causerResolver)
     {
         $this->causerResolver = $causerResolver;
@@ -48,6 +50,7 @@ class ActivityLogger
     public function performedOn(Model $model): static
     {
         $this->getActivity()->subject()->associate($model);
+        $this->logConnection = $model->getActivityLogOptions()->logConnection;
 
         return $this;
     }
@@ -161,6 +164,10 @@ class ActivityLogger
         }
 
         $activity = $this->activity;
+
+        if($this->logConnection) {
+            $activity->setConnection($this->logConnection);
+        }
 
         $activity->description = $this->replacePlaceholders(
             $activity->description ?? $description,

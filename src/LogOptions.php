@@ -18,6 +18,8 @@ class LogOptions
 
     public array $logAttributes = [];
 
+    public  ?string $logConnection = null;
+
     public array $logExceptAttributes = [];
 
     public array $dontLogIfAttributesChangedOnly = [];
@@ -88,6 +90,13 @@ class LogOptions
     public function logOnly(array $attributes): self
     {
         $this->logAttributes = $attributes;
+
+        return $this;
+    }
+
+    public function logConnection(string $connection): self
+    {
+        $this->logConnection = $connection;
 
         return $this;
     }
